@@ -1,15 +1,32 @@
 import React from 'react';
+import './CardEditor.css';
 
 class CardEditor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { front: '', back: '' };
+  }
+
+  handleChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  }
+
+  addCard = () => {
+    this.props.addCard(this.state);
+    this.setState({ front: '', back: ''});
+  }
+
+  deleteCard = index => this.props.deleteCard(index);
+
   render() {
     const cards = this.props.cards.map((card, index) => {
       return (
         <tr key={index}>
           <td>{card.front}</td>
           <td>{card.back}</td>
-          <td><button>Delete</button></td>
+          <td><button onClick={() => this.deleteCard(index)}>Delete card</button></td>
         </tr>
-      )
+      );
     });
 
     return (
@@ -28,8 +45,14 @@ class CardEditor extends React.Component {
             {cards}
           </tbody>
         </table>
+        <br />
+        <input name="front" placeholder="Front of card" value={this.state.front} onChange={this.handleChange} />
+        <input name="back" placeholder="Back of card" value={this.state.back} onChange={this.handleChange} />
+        <button onClick={this.addCard}>Add card</button>
+        <hr />
+        <button onClick={this.props.switchMode}>Go to Card Editor</button>
       </div>
-    )
+    );
   }
 }
 
