@@ -8,6 +8,7 @@ class App extends React.Component {
     this.state = {
       cards: [
         { front: '1+1', back: '2' },
+        { front: '5*2', back: '10'},
       ],
       editor: true,
     };
@@ -37,7 +38,11 @@ class App extends React.Component {
         />
       );
     } else {
-      return <CardViewer switchMode={this.switchMode} />
+      return (
+        <CardViewer
+          cards={this.state.cards}
+          switchMode={this.switchMode} />
+      );
     }
   }
 }
