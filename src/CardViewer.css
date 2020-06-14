@@ -2,10 +2,16 @@
   margin: 10px;
 }
 
-.viewer {
-  width: 100px;
-  height: 100px;
-  border: 1px solid black;
+.card {
+  width: 196px;
+  height: 196px;
+  border: 2px solid black;
   text-align: center;
-  margin: 10px;
+  line-height: 196px;
+  margin: auto;
+  font-size: 25px;
+}
+
+.viewer {
+  text-align: center;
 }

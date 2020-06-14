@@ -36,7 +36,11 @@ class CardEditor extends React.Component {
     return (
       <div>
         <h2>Card Editor</h2>
-
+        <input name="front" placeholder="Front of card" value={this.state.front} onChange={this.handleChange} />
+        <input name="back" placeholder="Back of card" value={this.state.back} onChange={this.handleChange} />
+        <button onClick={this.addCard}>Add card</button>
+        <br />
+        <br />
         <table>
           <thead>
             <tr>
@@ -50,10 +54,6 @@ class CardEditor extends React.Component {
             {cards}
           </tbody>
         </table>
-        <br />
-        <input name="front" placeholder="Front of card" value={this.state.front} onChange={this.handleChange} />
-        <input name="back" placeholder="Back of card" value={this.state.back} onChange={this.handleChange} />
-        <button onClick={this.addCard}>Add card</button>
         <hr />
         <button onClick={this.props.switchMode}>Go to Card Viewer</button>
       </div>

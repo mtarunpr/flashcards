@@ -1,6 +1,7 @@
 import React from 'react';
 import CardEditor from './CardEditor';
 import CardViewer from './CardViewer';
+import './App.css';
 
 class App extends React.Component {
   constructor(props) {
