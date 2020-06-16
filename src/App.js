@@ -12,6 +12,7 @@ class App extends React.Component {
         { front: '5*2', back: '10'},
       ],
       editor: true,
+      error: false,
     };
   }
 
@@ -23,7 +24,23 @@ class App extends React.Component {
   deleteCard = index => {
     const cards = this.state.cards.slice();
     cards.splice(index, 1);
-    this.setState({ cards });
+    this.setState({ cards }, this.validate);
+  }
+
+  editCard = (index, field, value) => {
+    const cards = this.state.cards.slice();
+    cards[index][field] = value;
+    this.setState({ cards }, this.validate);
+  }
+
+  validate = () => {
+    for (const card of this.state.cards) {
+      if (CardEditor.isInvalid(card)) {
+        this.setState({ error: true });
+        return;
+      }
+    }
+    this.setState({ error: false });
   }
 
   switchMode = () => this.setState({ editor: !this.state.editor });
@@ -34,8 +51,10 @@ class App extends React.Component {
         <CardEditor 
           addCard={this.addCard}
           deleteCard={this.deleteCard}
+          editCard={this.editCard}
           cards={this.state.cards}
           switchMode={this.switchMode}
+          error={this.state.error}
         />
       );
     } else {

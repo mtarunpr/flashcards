@@ -7,27 +7,40 @@ class CardEditor extends React.Component {
     this.state = { front: '', back: '' };
   }
 
-  handleChange = event => {
+  static isInvalid = card => {
+    return card.front.trim() === '' || card.back.trim() === '';
+  }
+
+  handleChangeAdd = event => {
     this.setState({ [event.target.name]: event.target.value });
   }
 
+  handleChangeEdit = event => {
+    const inputName = event.target.name;
+    const index = parseInt(inputName.substr(-1));
+    const field = inputName.substring(0, inputName.length - 1);
+    this.props.editCard(index, field, event.target.value);
+  }
+
   addCard = () => {
-    if (this.state.front.trim() === '' || this.state.back.trim() === '') {
+    if (CardEditor.isInvalid(this.state)) {
       return;
     }
     this.props.addCard(this.state);
     this.setState({ front: '', back: ''});
   }
 
-  deleteCard = index => this.props.deleteCard(index);
+  deleteCard = index => {
+    this.props.deleteCard(index);
+  }
 
   render() {
     const cards = this.props.cards.map((card, index) => {
       return (
         <tr key={index}>
           <td>{index + 1}</td>
-          <td>{card.front}</td>
-          <td>{card.back}</td>
+          <td><input name={'front' + index} value={card.front} onChange={this.handleChangeEdit} /></td>
+          <td><input name={'back' + index} value={card.back} onChange={this.handleChangeEdit} /></td>
           <td><button onClick={() => this.deleteCard(index)}>Delete card</button></td>
         </tr>
       );
@@ -36,8 +49,8 @@ class CardEditor extends React.Component {
     return (
       <div>
         <h2>Card Editor</h2>
-        <input name="front" placeholder="Front of card" value={this.state.front} onChange={this.handleChange} />
-        <input name="back" placeholder="Back of card" value={this.state.back} onChange={this.handleChange} />
+        <input autoComplete='off' name="front" placeholder="Front of card" value={this.state.front} onChange={this.handleChangeAdd} />
+        <input autoComplete='off' name="back" placeholder="Back of card" value={this.state.back} onChange={this.handleChangeAdd} />
         <button onClick={this.addCard}>Add card</button>
         <br />
         <br />
@@ -54,8 +67,15 @@ class CardEditor extends React.Component {
             {cards}
           </tbody>
         </table>
+
+        {this.props.error &&
+          <div className='error'>
+            Error: Both sides of cards must be non-empty.
+          </div>
+        }
+
         <hr />
-        <button onClick={this.props.switchMode}>Go to Card Viewer</button>
+        <button disabled={this.props.error} onClick={this.props.switchMode}>Go to Card Viewer</button>
       </div>
     );
   }
