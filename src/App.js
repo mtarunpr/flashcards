@@ -2,6 +2,7 @@ import React from 'react';
 import CardEditor from './CardEditor';
 import CardViewer from './CardViewer';
 import './App.css';
+import arrayMove from 'array-move';
 
 class App extends React.Component {
   constructor(props) {
@@ -42,6 +43,12 @@ class App extends React.Component {
     }
     this.setState({ error: false });
   }
+  
+  onSortEnd = ({ oldIndex, newIndex }) => {
+    this.setState(({ cards }) => ({
+      cards: arrayMove(cards, oldIndex, newIndex),
+    }));
+  };
 
   switchMode = () => this.setState({ editor: !this.state.editor });
 
@@ -55,6 +62,7 @@ class App extends React.Component {
           cards={this.state.cards}
           switchMode={this.switchMode}
           error={this.state.error}
+          onSortEnd={this.onSortEnd}
         />
       );
     } else {

@@ -1,5 +1,13 @@
 import React from 'react';
+import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
 import './CardEditor.css';
+
+const DragHandle = sortableHandle(() => <span className='drag-handle'>::</span>);
+
+const SortableItem = sortableElement(({ card }) => card);
+
+const SortableContainer = sortableContainer(({ cards }) => <ul>{cards}</ul>);
+
 
 class CardEditor extends React.Component {
   constructor(props) {
@@ -33,40 +41,34 @@ class CardEditor extends React.Component {
   deleteCard = index => {
     this.props.deleteCard(index);
   }
-
+  
   render() {
     const cards = this.props.cards.map((card, index) => {
+      const cardli = (
+        <div className='card-edit'>
+          {index + 1}.&nbsp;
+          <input name={'front' + index} placeholder='Front of card' value={card.front} onChange={this.handleChangeEdit} />
+          <input name={'back' + index} placeholder='Back of card' value={card.back} onChange={this.handleChangeEdit} />
+          <button onClick={() => this.deleteCard(index)}>Delete card</button>
+          &nbsp;
+          <DragHandle />
+        </div>
+      );
       return (
-        <tr key={index}>
-          <td>{index + 1}</td>
-          <td><input name={'front' + index} value={card.front} onChange={this.handleChangeEdit} /></td>
-          <td><input name={'back' + index} value={card.back} onChange={this.handleChangeEdit} /></td>
-          <td><button onClick={() => this.deleteCard(index)}>Delete card</button></td>
-        </tr>
+        <SortableItem key={index} index={index} card={cardli} />
       );
     });
 
     return (
       <div>
         <h2>Card Editor</h2>
-        <input autoComplete='off' name="front" placeholder="Front of card" value={this.state.front} onChange={this.handleChangeAdd} />
-        <input autoComplete='off' name="back" placeholder="Back of card" value={this.state.back} onChange={this.handleChangeAdd} />
+        <input autoComplete='off' name='front' placeholder='Front of card' value={this.state.front} onChange={this.handleChangeAdd} />
+        <input autoComplete='off' name='back' placeholder='Back of card' value={this.state.back} onChange={this.handleChangeAdd} />
         <button onClick={this.addCard}>Add card</button>
         <br />
         <br />
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Front</th>
-              <th>Back</th>
-              <th>Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cards}
-          </tbody>
-        </table>
+
+        <SortableContainer cards={cards} onSortEnd={this.props.onSortEnd} useDragHandle />
 
         {this.props.error &&
           <div className='error'>

@@ -17,3 +17,16 @@ th {
   color: red;
   margin-top: 10px;
 }
+
+.drag-handle {
+  cursor: move;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+.card-edit {
+  padding: 10px;
+}
