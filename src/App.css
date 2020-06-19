@@ -1,3 +1,22 @@
 body {
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
 }
+
+a {
+  color: black;
+  text-decoration: none;
+}
+
+.link-btn {
+  padding: .375rem .75rem;
+  background-color: #007bff;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .25rem;
+  white-space: nowrap;
+  color: white;
+  margin-right: 10px;
+}

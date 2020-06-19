@@ -3,6 +3,8 @@ import CardEditor from './CardEditor';
 import CardViewer from './CardViewer';
 import './App.css';
 import arrayMove from 'array-move';
+import { Switch, Route } from 'react-router-dom';
+import Homepage from './Homepage';
 
 class App extends React.Component {
   constructor(props) {
@@ -10,9 +12,8 @@ class App extends React.Component {
     this.state = {
       cards: [
         { front: '1+1', back: '2' },
-        { front: '5*2', back: '10'},
+        { front: '5*2', back: '10' },
       ],
-      editor: true,
       error: false,
     };
   }
@@ -43,35 +44,36 @@ class App extends React.Component {
     }
     this.setState({ error: false });
   }
-  
+
   onSortEnd = ({ oldIndex, newIndex }) => {
     this.setState(({ cards }) => ({
       cards: arrayMove(cards, oldIndex, newIndex),
     }));
   };
 
-  switchMode = () => this.setState({ editor: !this.state.editor });
-
   render() {
-    if (this.state.editor) {
-      return (
-        <CardEditor 
-          addCard={this.addCard}
-          deleteCard={this.deleteCard}
-          editCard={this.editCard}
-          cards={this.state.cards}
-          switchMode={this.switchMode}
-          error={this.state.error}
-          onSortEnd={this.onSortEnd}
-        />
-      );
-    } else {
-      return (
-        <CardViewer
-          cards={this.state.cards}
-          switchMode={this.switchMode} />
-      );
-    }
+    return (
+      <Switch>
+        <Route exact path='/'>
+          <Homepage />
+        </Route>
+        <Route exact path='/editor'>
+          <CardEditor
+            addCard={this.addCard}
+            deleteCard={this.deleteCard}
+            editCard={this.editCard}
+            cards={this.state.cards}
+            error={this.state.error}
+            onSortEnd={this.onSortEnd}
+          />
+        </Route>
+        <Route exact path='/viewer'>
+          <CardViewer
+            cards={this.state.cards}
+          />
+        </Route>
+      </Switch>
+    );
   }
 }
 
