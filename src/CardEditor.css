@@ -1,16 +1,14 @@
-table,
-td,
-th {
-  border: 1px solid black;
+input {
+  border: none;
+  border-bottom: 2px solid grey;
+  margin-right: 20px;
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
 }
 
-table {
-  border-collapse: collapse;
-}
-
-td,
-th {
-  padding: 10px;
+input:focus {
+  border-bottom: 2px solid #007bff;
 }
 
 .error {
@@ -29,4 +27,21 @@ ul {
 
 .card-edit {
   padding: 10px;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: .65;
+}
+
+.material-icons {
+  vertical-align: middle;
+}
+
+.delete-btn:hover, .add-btn:hover {
+  cursor: pointer;
+}
+
+.add-group {
+  margin-left: 60px;
 }

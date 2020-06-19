@@ -1,13 +1,44 @@
 import React from 'react';
 import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
 import './CardEditor.css';
+import { Link } from 'react-router-dom';
 
-const DragHandle = sortableHandle(() => <span className='drag-handle'>::</span>);
+const DragHandle = sortableHandle(() => (
+  <span className='drag-handle material-icons'>
+    drag_handle
+  </span>
+));
 
 const SortableItem = sortableElement(({ card }) => card);
 
 const SortableContainer = sortableContainer(({ cards }) => <ul>{cards}</ul>);
 
+function Editable(props) {
+  const i = props.index;
+
+  return (
+    <div className='card-edit'>
+      <DragHandle />
+      &nbsp;
+      {i + 1}.&nbsp;
+      <input
+        autoComplete='off'
+        name={'front' + i}
+        placeholder='Front of card'
+        value={props.card.front}
+        onChange={props.handleChangeEdit}
+      />
+      <input
+        autoComplete='off'
+        name={'back' + i}
+        placeholder='Back of card'
+        value={props.card.back}
+        onChange={props.handleChangeEdit}
+      />
+      <span className='material-icons delete-btn' onClick={() => props.deleteCard(i)}>delete</span>
+    </div>
+  );
+}
 
 class CardEditor extends React.Component {
   constructor(props) {
@@ -35,24 +66,22 @@ class CardEditor extends React.Component {
       return;
     }
     this.props.addCard(this.state);
-    this.setState({ front: '', back: ''});
+    this.setState({ front: '', back: '' });
   }
 
   deleteCard = index => {
     this.props.deleteCard(index);
   }
-  
+
   render() {
     const cards = this.props.cards.map((card, index) => {
       const cardli = (
-        <div className='card-edit'>
-          {index + 1}.&nbsp;
-          <input name={'front' + index} placeholder='Front of card' value={card.front} onChange={this.handleChangeEdit} />
-          <input name={'back' + index} placeholder='Back of card' value={card.back} onChange={this.handleChangeEdit} />
-          <button onClick={() => this.deleteCard(index)}>Delete card</button>
-          &nbsp;
-          <DragHandle />
-        </div>
+        <Editable
+          index={index}
+          card={card}
+          handleChangeEdit={this.handleChangeEdit}
+          deleteCard={this.deleteCard}
+        />
       );
       return (
         <SortableItem key={index} index={index} card={cardli} />
@@ -61,11 +90,13 @@ class CardEditor extends React.Component {
 
     return (
       <div>
+        <h1><Link className={this.props.error ? 'disabled' : ''} to='/'>Flashcards</Link></h1>
         <h2>Card Editor</h2>
-        <input autoComplete='off' name='front' placeholder='Front of card' value={this.state.front} onChange={this.handleChangeAdd} />
-        <input autoComplete='off' name='back' placeholder='Back of card' value={this.state.back} onChange={this.handleChangeAdd} />
-        <button onClick={this.addCard}>Add card</button>
-        <br />
+        <div className='add-group'>
+          <input autoComplete='off' name='front' placeholder='Front of card' value={this.state.front} onChange={this.handleChangeAdd} />
+          <input autoComplete='off' name='back' placeholder='Back of card' value={this.state.back} onChange={this.handleChangeAdd} />
+          <span className='material-icons add-btn' onClick={this.addCard}>add_circle_outline</span>
+        </div>
         <br />
 
         <SortableContainer cards={cards} onSortEnd={this.props.onSortEnd} useDragHandle />
@@ -77,7 +108,7 @@ class CardEditor extends React.Component {
         }
 
         <hr />
-        <button disabled={this.props.error} onClick={this.props.switchMode}>Go to Card Viewer</button>
+        <Link className={(this.props.error ? 'disabled' : '') + ' link-btn'} to='/viewer'>Go to Card Viewer</Link>
       </div>
     );
   }
