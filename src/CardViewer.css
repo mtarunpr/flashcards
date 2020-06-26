@@ -3,11 +3,11 @@
 }
 
 .card {
-  width: 196px;
-  height: 196px;
+  width: 400px;
+  height: 300px;
   border: 2px solid black;
   text-align: center;
-  line-height: 196px;
+  line-height: 300px;
   margin: auto;
   font-size: 25px;
 }

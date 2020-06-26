@@ -67,10 +67,8 @@ class App extends React.Component {
             onSortEnd={this.onSortEnd}
           />
         </Route>
-        <Route exact path='/viewer'>
-          <CardViewer
-            cards={this.state.cards}
-          />
+        <Route exact path='/viewer/:deckId'>
+          <CardViewer />
         </Route>
       </Switch>
     );
