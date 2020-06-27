@@ -1,6 +1,7 @@
 import React from 'react';
 import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
 import './CardEditor.css';
+import arrayMove from 'array-move';
 import { Link } from 'react-router-dom';
 
 const DragHandle = sortableHandle(() => (
@@ -43,11 +44,29 @@ function Editable(props) {
 class CardEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { front: '', back: '' };
+    this.state = {
+      cards: [
+        { front: '1+1', back: '2' },
+        { front: '5*2', back: '10' },
+      ],
+      front: '',
+      back: '',
+      error: false,
+    };
   }
 
   static isInvalid = card => {
     return card.front.trim() === '' || card.back.trim() === '';
+  }
+
+  validate = () => {
+    for (const card of this.state.cards) {
+      if (CardEditor.isInvalid(card)) {
+        this.setState({ error: true });
+        return;
+      }
+    }
+    this.setState({ error: false });
   }
 
   handleChangeAdd = event => {
@@ -58,23 +77,38 @@ class CardEditor extends React.Component {
     const inputName = event.target.name;
     const index = parseInt(inputName.substr(-1));
     const field = inputName.substring(0, inputName.length - 1);
-    this.props.editCard(index, field, event.target.value);
+    this.editCard(index, field, event.target.value);
   }
 
   addCard = () => {
     if (CardEditor.isInvalid(this.state)) {
       return;
     }
-    this.props.addCard(this.state);
-    this.setState({ front: '', back: '' });
+    const card = { front: this.state.front, back: this.state.back };
+    const cards = this.state.cards.slice().concat(card);
+    this.setState({ cards, front: '', back: '' });
+  }
+  
+  editCard = (index, field, value) => {
+    const cards = this.state.cards.slice();
+    cards[index][field] = value;
+    this.setState({ cards }, this.validate);
   }
 
   deleteCard = index => {
-    this.props.deleteCard(index);
+    const cards = this.state.cards.slice();
+    cards.splice(index, 1);
+    this.setState({ cards }, this.validate);
   }
 
+  onSortEnd = ({ oldIndex, newIndex }) => {
+    this.setState(({ cards }) => ({
+      cards: arrayMove(cards, oldIndex, newIndex),
+    }));
+  };
+
   render() {
-    const cards = this.props.cards.map((card, index) => {
+    const cards = this.state.cards.map((card, index) => {
       const cardli = (
         <Editable
           index={index}
@@ -90,7 +124,7 @@ class CardEditor extends React.Component {
 
     return (
       <div>
-        <h1><Link className={this.props.error ? 'disabled' : ''} to='/'>Flashcards</Link></h1>
+        <h1><Link className={this.state.error ? 'disabled' : ''} to='/'>Flashcards</Link></h1>
         <h2>Card Editor</h2>
         <div className='add-group'>
           <input autoComplete='off' name='front' placeholder='Front of card' value={this.state.front} onChange={this.handleChangeAdd} />
@@ -99,16 +133,16 @@ class CardEditor extends React.Component {
         </div>
         <br />
 
-        <SortableContainer cards={cards} onSortEnd={this.props.onSortEnd} useDragHandle />
+        <SortableContainer cards={cards} onSortEnd={this.onSortEnd} useDragHandle />
 
-        {this.props.error &&
+        {this.state.error &&
           <div className='error'>
             Error: Both sides of cards must be non-empty.
           </div>
         }
 
         <hr />
-        <Link className={(this.props.error ? 'disabled' : '') + ' link-btn'} to='/viewer'>Go to Card Viewer</Link>
+        <Link className={(this.state.error ? 'disabled' : '') + ' link-btn'} to='/viewer'>Go to Card Viewer</Link>
       </div>
     );
   }

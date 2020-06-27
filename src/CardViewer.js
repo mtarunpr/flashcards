@@ -73,7 +73,7 @@ class CardViewer extends React.Component {
     }
 
     if (isEmpty(this.props.cards)) {
-      return <div>Error 404: Page not found.</div>;
+      return <div>Error: Deck not found.</div>;
     }
 
     const card = this.state.cards[this.state.idx];
