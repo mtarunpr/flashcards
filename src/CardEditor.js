@@ -1,8 +1,10 @@
 import React from 'react';
-import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
 import './CardEditor.css';
 import arrayMove from 'array-move';
+
 import { Link } from 'react-router-dom';
+import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
+import { firebaseConnect } from 'react-redux-firebase';
 
 const DragHandle = sortableHandle(() => (
   <span className='drag-handle material-icons'>
@@ -51,12 +53,13 @@ class CardEditor extends React.Component {
       ],
       front: '',
       back: '',
+      name: '',
       error: false,
     };
   }
 
   static isInvalid = card => {
-    return card.front.trim() === '' || card.back.trim() === '';
+    return !card.front.trim() || !card.back.trim();
   }
 
   validate = () => {
@@ -69,7 +72,7 @@ class CardEditor extends React.Component {
     this.setState({ error: false });
   }
 
-  handleChangeAdd = event => {
+  handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   }
 
@@ -88,7 +91,7 @@ class CardEditor extends React.Component {
     const cards = this.state.cards.slice().concat(card);
     this.setState({ cards, front: '', back: '' });
   }
-  
+
   editCard = (index, field, value) => {
     const cards = this.state.cards.slice();
     cards[index][field] = value;
@@ -99,6 +102,12 @@ class CardEditor extends React.Component {
     const cards = this.state.cards.slice();
     cards.splice(index, 1);
     this.setState({ cards }, this.validate);
+  }
+
+  createDeck = () => {
+    const deckId = this.props.firebase.push('/flashcards').key;
+    const deck = { cards: this.state.cards, name: this.state.name };
+    this.props.firebase.update(`/flashcards/${deckId}`, deck);
   }
 
   onSortEnd = ({ oldIndex, newIndex }) => {
@@ -124,11 +133,42 @@ class CardEditor extends React.Component {
 
     return (
       <div>
-        <h1><Link className={this.state.error ? 'disabled' : ''} to='/'>Flashcards</Link></h1>
+        <h1>
+          <Link
+            className={this.state.error ? 'disabled' : ''}
+            to='/'
+          >
+            Flashcards
+          </Link>
+        </h1>
         <h2>Card Editor</h2>
+        <div>
+          <input
+            autoComplete='off'
+            name='name'
+            className='deck-name'
+            placeholder='Name of deck'
+            value={this.state.name}
+            onChange={this.handleChange}
+          />
+          <br />
+          <br />
+        </div>
         <div className='add-group'>
-          <input autoComplete='off' name='front' placeholder='Front of card' value={this.state.front} onChange={this.handleChangeAdd} />
-          <input autoComplete='off' name='back' placeholder='Back of card' value={this.state.back} onChange={this.handleChangeAdd} />
+          <input
+            autoComplete='off'
+            name='front'
+            placeholder='Front of card'
+            value={this.state.front}
+            onChange={this.handleChange}
+          />
+          <input
+            autoComplete='off'
+            name='back'
+            placeholder='Back of card'
+            value={this.state.back}
+            onChange={this.handleChange}
+          />
           <span className='material-icons add-btn' onClick={this.addCard}>add_circle_outline</span>
         </div>
         <br />
@@ -140,12 +180,23 @@ class CardEditor extends React.Component {
             Error: Both sides of cards must be non-empty.
           </div>
         }
-
+        <br />
+        <button
+          disabled={!this.state.name.trim() || this.state.cards.length === 0}
+          onClick={this.createDeck}
+        >
+          Create Deck
+        </button>
         <hr />
-        <Link className={(this.state.error ? 'disabled' : '') + ' link-btn'} to='/viewer'>Go to Card Viewer</Link>
+        <Link
+          className={(this.state.error ? 'disabled' : '') + ' link-btn'}
+          to='/viewer'
+        >
+          Go to Card Viewer
+        </Link>
       </div>
     );
   }
 }
 
-export default CardEditor;
+export default firebaseConnect()(CardEditor);
