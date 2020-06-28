@@ -2,9 +2,10 @@ import React from 'react';
 import './CardEditor.css';
 import arrayMove from 'array-move';
 
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
 import { firebaseConnect } from 'react-redux-firebase';
+import { compose } from 'redux';
 
 const DragHandle = sortableHandle(() => (
   <span className='drag-handle material-icons'>
@@ -48,13 +49,12 @@ class CardEditor extends React.Component {
     super(props);
     this.state = {
       cards: [
-        { front: '1+1', back: '2' },
-        { front: '5*2', back: '10' },
+        { front: 'front1', back: 'back1' },
+        { front: 'front2', back: 'back2' },
       ],
       front: '',
       back: '',
       name: '',
-      error: false,
     };
   }
 
@@ -63,13 +63,15 @@ class CardEditor extends React.Component {
   }
 
   validate = () => {
+    if (!this.state.name.trim() || this.state.cards.length === 0) {
+      return false;
+    }
     for (const card of this.state.cards) {
       if (CardEditor.isInvalid(card)) {
-        this.setState({ error: true });
-        return;
+        return false;
       }
     }
-    this.setState({ error: false });
+    return true;
   }
 
   handleChange = event => {
@@ -95,19 +97,26 @@ class CardEditor extends React.Component {
   editCard = (index, field, value) => {
     const cards = this.state.cards.slice();
     cards[index][field] = value;
-    this.setState({ cards }, this.validate);
+    this.setState({ cards });
   }
 
   deleteCard = index => {
     const cards = this.state.cards.slice();
     cards.splice(index, 1);
-    this.setState({ cards }, this.validate);
+    this.setState({ cards });
   }
 
   createDeck = () => {
     const deckId = this.props.firebase.push('/flashcards').key;
     const deck = { cards: this.state.cards, name: this.state.name };
-    this.props.firebase.update(`/flashcards/${deckId}`, deck);
+
+    const updates = {};
+    updates[`/flashcards/${deckId}`] = deck;
+    updates[`/homepage/${deckId}/name`] = this.state.name;
+
+    const onComplete = () => this.props.history.push(`/viewer/${deckId}`);
+
+    this.props.firebase.update('/', updates, onComplete);
   }
 
   onSortEnd = ({ oldIndex, newIndex }) => {
@@ -134,12 +143,7 @@ class CardEditor extends React.Component {
     return (
       <div>
         <h1>
-          <Link
-            className={this.state.error ? 'disabled' : ''}
-            to='/'
-          >
-            Flashcards
-          </Link>
+          <Link to='/'>Flashcards</Link>
         </h1>
         <h2>Card Editor</h2>
         <div>
@@ -175,28 +179,18 @@ class CardEditor extends React.Component {
 
         <SortableContainer cards={cards} onSortEnd={this.onSortEnd} useDragHandle />
 
-        {this.state.error &&
-          <div className='error'>
-            Error: Both sides of cards must be non-empty.
-          </div>
-        }
         <br />
         <button
-          disabled={!this.state.name.trim() || this.state.cards.length === 0}
+          disabled={!this.validate()}
           onClick={this.createDeck}
         >
           Create Deck
         </button>
         <hr />
-        <Link
-          className={(this.state.error ? 'disabled' : '') + ' link-btn'}
-          to='/viewer'
-        >
-          Go to Card Viewer
-        </Link>
+        <Link className='link-btn' to='/'>Home</Link>
       </div>
     );
   }
 }
 
-export default firebaseConnect()(CardEditor);
+export default compose(withRouter, firebaseConnect())(CardEditor);

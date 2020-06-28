@@ -28,12 +28,6 @@ ul {
 .card-edit {
   padding: 10px;
 }
-
-.disabled {
-  pointer-events: none;
-  opacity: .65;
-}
-
 .material-icons {
   vertical-align: middle;
 }

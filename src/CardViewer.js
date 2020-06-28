@@ -99,7 +99,7 @@ class CardViewer extends React.Component {
         }
 
         <hr />
-        <Link className='link-btn' to='/editor'>Go to Card Editor</Link>
+        <Link className='link-btn' to='/'>Home</Link>
       </div>
     );
   }
