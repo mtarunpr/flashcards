@@ -1,0 +1,27 @@
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.flex-item {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border: 1px solid black;
+  padding: 20px;
+  margin: 20px;
+}
+
+.flex-item:hover {
+  border: 2px solid black;
+  padding: 19px;
+}
+
+.new-btn {
+  font-size: 48px;
+  color: #007bff;
+}

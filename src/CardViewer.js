@@ -65,6 +65,9 @@ class CardViewer extends React.Component {
     else if (event.keyCode === 39 && this.state.idx + 1 < this.state.cards.length) {
       this.seek(1);
     }
+    else if (event.keyCode === 32) {
+      this.flipCard();
+    }
   }
 
   render() {
@@ -90,9 +93,9 @@ class CardViewer extends React.Component {
             <div className='card' onClick={this.flipCard}>
               {this.state.showFront ? card.front : card.back}
             </div>
-            <button disabled={idx === 0} className='seeker' onClick={() => this.seek(-1)}>Prev</button>
+            <button disabled={idx === 0} className='material-icons seeker' onClick={() => this.seek(-1)}>arrow_back</button>
             Progress: {idx + 1}/{ncards}
-            <button disabled={idx + 1 === ncards} className='seeker' onClick={() => this.seek(1)}>Next</button>
+            <button disabled={idx + 1 === ncards} className='material-icons seeker' onClick={() => this.seek(1)}>arrow_forward</button>
             <br />
             <button onClick={this.toggleShuffle}>{this.state.shuffle ? 'Unshuffle!' : 'Shuffle!'}</button>
           </div>
