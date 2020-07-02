@@ -46,3 +46,8 @@ ul {
   width: 430px;
   font-size: xx-large;
 }
+
+.deck-desc {
+  margin-left: 60px;
+  width: 430px;
+}

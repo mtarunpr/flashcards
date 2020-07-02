@@ -55,6 +55,7 @@ class CardEditor extends React.Component {
       front: '',
       back: '',
       name: '',
+      description: '',
     };
   }
 
@@ -63,7 +64,7 @@ class CardEditor extends React.Component {
   }
 
   validate = () => {
-    if (!this.state.name.trim() || this.state.cards.length === 0) {
+    if (!this.state.name.trim() || !this.state.description.trim() || this.state.cards.length === 0) {
       return false;
     }
     for (const card of this.state.cards) {
@@ -108,11 +109,16 @@ class CardEditor extends React.Component {
 
   createDeck = () => {
     const deckId = this.props.firebase.push('/flashcards').key;
-    const deck = { cards: this.state.cards, name: this.state.name };
+    const deck = { 
+      cards: this.state.cards,
+      name: this.state.name,
+      description: this.state.description,
+    };
 
     const updates = {};
     updates[`/flashcards/${deckId}`] = deck;
     updates[`/homepage/${deckId}/name`] = this.state.name;
+    updates[`/homepage/${deckId}/description`] = this.state.description;
 
     const onComplete = () => this.props.history.push(`/viewer/${deckId}`);
 
@@ -153,6 +159,16 @@ class CardEditor extends React.Component {
             className='deck-name'
             placeholder='Name of deck'
             value={this.state.name}
+            onChange={this.handleChange}
+          />
+          <br />
+          <br />
+          <input
+            autoComplete='off'
+            name='description'
+            className='deck-desc'
+            placeholder='Description'
+            value={this.state.description}
             onChange={this.handleChange}
           />
           <br />

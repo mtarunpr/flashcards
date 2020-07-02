@@ -8,14 +8,20 @@ import { connect } from 'react-redux';
 
 class Homepage extends React.Component {
   render() {
-    if (!isLoaded(this.props.names)) {
+    if (!isLoaded(this.props.decks)) {
       return <div>Loading...</div>;
     }
 
-    const deckLinks = Object.keys(this.props.names).map(deckId => {
+    const deckLinks = Object.keys(this.props.decks).map(deckId => {
       return (
           <Link key={deckId} className='flex-item' to={'/viewer/' + deckId}>
-            {this.props.names[deckId]['name']}
+            <div className='name'>
+              {this.props.decks[deckId]['name']}
+            </div>
+            <br />
+            <div className='description'>
+              {this.props.decks[deckId]['description']}
+            </div>
           </Link>
       );
     });
@@ -34,8 +40,8 @@ class Homepage extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const names = state.firebase.data.homepage;
-  return { names };
+  const decks = state.firebase.data.homepage;
+  return { decks };
 }
 
 export default compose(firebaseConnect(['/homepage']), connect(mapStateToProps))(Homepage);

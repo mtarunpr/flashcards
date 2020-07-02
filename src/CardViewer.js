@@ -87,6 +87,7 @@ class CardViewer extends React.Component {
       <div>
         <h1><Link to='/'>Flashcards</Link></h1>
         <h2>{this.props.name}</h2>
+        <p>{this.props.description}</p>
 
         {ncards > 0 &&
           <div className='viewer'>
@@ -112,7 +113,8 @@ const mapStateToProps = (state, props) => {
   const deck = state.firebase.data[props.match.params.deckId];
   const name = deck && deck.name;
   const cards = deck && deck.cards;
-  return { name, cards };
+  const description = deck && deck.description;
+  return { name, description, cards };
 }
 
 export default compose(
