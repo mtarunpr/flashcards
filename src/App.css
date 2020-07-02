@@ -25,3 +25,7 @@ a {
   pointer-events: none;
   opacity: .65;
 }
+
+button {
+  outline: none;
+}
