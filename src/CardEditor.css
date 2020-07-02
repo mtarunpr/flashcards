@@ -33,8 +33,14 @@ ul {
   vertical-align: middle;
 }
 
-.delete-btn:hover, .add-btn:hover {
+.add-btn:hover {
   cursor: pointer;
+  color: #179c52;
+}
+
+.delete-btn:hover  {
+  cursor: pointer;
+  color: #ea4335;
 }
 
 .add-group {

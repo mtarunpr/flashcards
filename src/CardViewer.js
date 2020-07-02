@@ -13,6 +13,7 @@ class CardViewer extends React.Component {
       idx: 0,
       showFront: true,
       shuffle: false,
+      showStarred: false,
       cards: [],
     };
   }
@@ -20,7 +21,7 @@ class CardViewer extends React.Component {
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyDown, false);
   }
-  
+
   componentDidUpdate = prevProps => {
     if (this.props.cards && this.props.cards !== prevProps.cards) {
       const idx = Math.min(this.state.idx, this.props.cards.length - 1);
@@ -34,6 +35,15 @@ class CardViewer extends React.Component {
 
   flipCard = () => {
     this.setState({ showFront: !this.state.showFront });
+  }
+
+  star = event => {
+    const deckId = this.props.match.params.deckId;
+    this.props.firebase.update(
+      `/flashcards/${deckId}/cards/${this.state.idx}`,
+      { starred: !this.state.cards[this.state.idx].starred },
+    );
+    event.stopPropagation();
   }
 
   seek = delta => {
@@ -56,6 +66,10 @@ class CardViewer extends React.Component {
       showFront: true,
       shuffle,
     });
+  }
+
+  toggleShowStarred = () => {
+    this.setState({ showStarred: !this.state.showStarred });
   }
 
   onKeyDown = event => {
@@ -92,13 +106,21 @@ class CardViewer extends React.Component {
         {ncards > 0 &&
           <div className='viewer'>
             <div className='card' onClick={this.flipCard}>
-              {this.state.showFront ? card.front : card.back}
+              <span className='material-icons star' onClick={this.star}>
+                {this.state.cards[this.state.idx].starred ? 'star' : 'star_outline'}
+              </span>
+              <div className='card-content'>
+                {this.state.showFront ? card.front : card.back}
+              </div>
             </div>
             <button disabled={idx === 0} className='material-icons seeker' onClick={() => this.seek(-1)}>arrow_back</button>
             Progress: {idx + 1}/{ncards}
             <button disabled={idx + 1 === ncards} className='material-icons seeker' onClick={() => this.seek(1)}>arrow_forward</button>
             <br />
             <button onClick={this.toggleShuffle}>{this.state.shuffle ? 'Unshuffle!' : 'Shuffle!'}</button>
+            <br />
+            <br />
+            <button onClick={this.toggleShowStarred}>{this.state.showStarred ? 'Display all' : 'Only display starred'}</button>
           </div>
         }
 

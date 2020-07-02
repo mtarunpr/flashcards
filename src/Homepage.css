@@ -28,12 +28,17 @@
 }
 
 .name {
-  height: 40px;
   width: 100%;
   font-weight: bold;
+  padding-bottom: 5px;
   border-bottom: 1px solid black;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .description {
   height: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
