@@ -45,6 +45,7 @@
   z-index: 1;
   user-select: none;
   -moz-user-select: none;
+  outline: none;
 }
 
 .viewer {

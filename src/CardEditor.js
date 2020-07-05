@@ -2,10 +2,11 @@ import React from 'react';
 import './CardEditor.css';
 import arrayMove from 'array-move';
 
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, Redirect } from 'react-router-dom';
 import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
 import { firebaseConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
+import { connect } from 'react-redux';
 
 const DragHandle = sortableHandle(() => (
   <span className='drag-handle material-icons'>
@@ -109,7 +110,7 @@ class CardEditor extends React.Component {
 
   createDeck = () => {
     const deckId = this.props.firebase.push('/flashcards').key;
-    const deck = { 
+    const deck = {
       cards: this.state.cards,
       name: this.state.name,
       description: this.state.description,
@@ -132,6 +133,10 @@ class CardEditor extends React.Component {
   };
 
   render() {
+    if (!this.props.isLoggedIn) {
+      return <Redirect to='/register' />;
+    }
+
     const cards = this.state.cards.map((card, index) => {
       const cardli = (
         <Editable
@@ -209,4 +214,12 @@ class CardEditor extends React.Component {
   }
 }
 
-export default compose(withRouter, firebaseConnect())(CardEditor);
+const mapStateToProps = state => {
+  return { isLoggedIn: state.firebase.auth.uid };
+}
+
+export default compose(
+  withRouter,
+  firebaseConnect(),
+  connect(mapStateToProps),
+)(CardEditor);

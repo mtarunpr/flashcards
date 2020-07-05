@@ -14,15 +14,15 @@ class Homepage extends React.Component {
 
     const deckLinks = Object.keys(this.props.decks).map(deckId => {
       return (
-          <Link key={deckId} className='flex-item' to={'/viewer/' + deckId}>
-            <div className='name'>
-              {this.props.decks[deckId]['name']}
-            </div>
-            <br />
-            <div className='description'>
-              {this.props.decks[deckId]['description']}
-            </div>
-          </Link>
+        <Link key={deckId} className='flex-item' to={'/viewer/' + deckId}>
+          <div className='name'>
+            {this.props.decks[deckId]['name']}
+          </div>
+          <br />
+          <div className='description'>
+            {this.props.decks[deckId]['description']}
+          </div>
+        </Link>
       );
     });
 
@@ -33,7 +33,22 @@ class Homepage extends React.Component {
           {deckLinks}
         </div>
         <br />
-        <Link style={{marginLeft: '20px'}} className='material-icons new-btn' to='/editor'>add_circle</Link>
+        <Link style={{ marginLeft: '20px' }} className='material-icons new-btn' to='/editor'>add_circle</Link>
+        <h3>Account</h3>
+        {
+          this.props.isLoggedIn ?
+            <div>
+              <div>{this.props.email}</div>
+              <br />
+              <button onClick={this.props.firebase.logout}>Logout</button>
+            </div> :
+            <div>
+              <Link to='/login'>Login</Link>
+              <br />
+              <Link to='/register'>Register</Link>
+            </div>
+        }
+
       </div>
     );
   }
@@ -41,7 +56,9 @@ class Homepage extends React.Component {
 
 const mapStateToProps = state => {
   const decks = state.firebase.data.homepage;
-  return { decks };
+  const email = state.firebase.auth.email;
+  const isLoggedIn = state.firebase.auth.uid;
+  return { decks, email, isLoggedIn };
 }
 
 export default compose(firebaseConnect(['/homepage']), connect(mapStateToProps))(Homepage);

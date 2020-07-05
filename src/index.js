@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import firebase from 'firebase/app';
 import 'firebase/database';
+import 'firebase/auth';
 import { createStore, combineReducers } from 'redux';
 import {
   ReactReduxFirebaseProvider,
@@ -16,7 +17,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBbfEKrqqpXtIYLlkDbpC6RVDuvdoFw0hM",
-  authDomain: "bootcamp-tarun.firebaseapp.com",
+  authDomain: "bootcamp-tarun.firebaseapp.com", 
   databaseURL: "https://bootcamp-tarun.firebaseio.com",
   projectId: "bootcamp-tarun",
   storageBucket: "bootcamp-tarun.appspot.com",
@@ -37,7 +38,8 @@ const store = createStore(rootReducer, composeWithDevTools());
 
 // react-redux-firebase config
 const rrfConfig = {
-  userProfile: 'users'
+  userProfile: 'users',
+  preserveOnLogout: ['homepage'],
   // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
   // enableClaims: true // Get custom claims along with the profile
 }
