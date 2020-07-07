@@ -1,0 +1,41 @@
+.span-link {
+  cursor: pointer;
+}
+
+.dropbtn {
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  position: absolute;
+  border: 1px solid black;
+  min-width: 120px;
+  overflow: auto;
+  z-index: 1;
+  right: 0;
+}
+
+.dropdown-content a, .dropdown-content .span-link {
+  background-color: white;
+  color: black;
+  padding: 10px 14px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown a:hover, .dropdown .span-link:hover {
+  background-color: #ddd;
+}
+
+h1 {
+  float: left;
+}
+
+.menu-right {
+  float: right;
+  margin-top: 20px;
+}

@@ -39,35 +39,17 @@ class Homepage extends React.Component {
 
     return (
       <div>
-        <h1><Link to='/'>Flashcards</Link></h1>
-
-        <h3>My Decks</h3>
+        <h2>My Decks</h2>
         <div className='flex-container'>
           {myDecks.length ? myDecks : 'You have not created any decks. Create one now!'}
         </div>
 
         <Link style={{ marginLeft: '20px' }} className='material-icons new-btn' to='/editor'>add_circle</Link>
 
-        <h3>Public Decks</h3>
+        <h2>Public Decks</h2>
         <div className='flex-container'>
-          {publicDecks.length ? publicDecks : 'There are no public decks.'}
+          {publicDecks.length ? publicDecks : 'There are no public decks created by others.'}
         </div>
-
-        <h3>Account</h3>
-        {
-          this.props.uid ?
-            <div>
-              <div>{this.props.email}</div>
-              <br />
-              <button onClick={this.props.firebase.logout}>Logout</button>
-            </div> :
-            <div>
-              <Link to='/login'>Login</Link>
-              <br />
-              <Link to='/register'>Register</Link>
-            </div>
-        }
-
       </div>
     );
   }
@@ -75,9 +57,8 @@ class Homepage extends React.Component {
 
 const mapStateToProps = state => {
   const decks = state.firebase.data.homepage;
-  const email = state.firebase.auth.email;
   const uid = state.firebase.auth.uid;
-  return { decks, email, uid };
+  return { decks, uid };
 }
 
 export default compose(firebaseConnect(['/homepage']), connect(mapStateToProps))(Homepage);

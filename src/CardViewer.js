@@ -132,7 +132,6 @@ class CardViewer extends React.Component {
 
     return (
       <div>
-        <h1><Link to='/'>Flashcards</Link></h1>
         <h2>{this.props.name}</h2>
         <p>{this.props.description}</p>
 

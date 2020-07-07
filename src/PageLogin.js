@@ -3,7 +3,7 @@ import React from 'react';
 import { firebaseConnect } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { redirect, Redirect, Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 class PageLogin extends React.Component {
   constructor(props) {

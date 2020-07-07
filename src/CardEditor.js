@@ -162,9 +162,6 @@ class CardEditor extends React.Component {
 
     return (
       <div>
-        <h1>
-          <Link to='/'>Flashcards</Link>
-        </h1>
         <h2>Card Editor</h2>
         <div>
           <input
