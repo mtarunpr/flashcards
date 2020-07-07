@@ -57,6 +57,7 @@ class CardEditor extends React.Component {
       back: '',
       name: '',
       description: '',
+      public: true,
     };
   }
 
@@ -87,6 +88,10 @@ class CardEditor extends React.Component {
     this.editCard(index, field, event.target.value);
   }
 
+  handleCheckboxChange = event => {
+    this.setState({ [event.target.name]: event.target.checked });
+  }
+
   addCard = () => {
     if (CardEditor.isInvalid(this.state)) {
       return;
@@ -114,12 +119,16 @@ class CardEditor extends React.Component {
       cards: this.state.cards,
       name: this.state.name,
       description: this.state.description,
+      public: this.state.public,
+      owner: this.props.uid,
     };
 
     const updates = {};
     updates[`/flashcards/${deckId}`] = deck;
     updates[`/homepage/${deckId}/name`] = this.state.name;
     updates[`/homepage/${deckId}/description`] = this.state.description;
+    updates[`/homepage/${deckId}/public`] = this.state.public;
+    updates[`/homepage/${deckId}/owner`] = this.props.uid;
 
     const onComplete = () => this.props.history.push(`/viewer/${deckId}`);
 
@@ -133,7 +142,7 @@ class CardEditor extends React.Component {
   };
 
   render() {
-    if (!this.props.isLoggedIn) {
+    if (!this.props.uid) {
       return <Redirect to='/register' />;
     }
 
@@ -201,6 +210,17 @@ class CardEditor extends React.Component {
         <SortableContainer cards={cards} onSortEnd={this.onSortEnd} useDragHandle />
 
         <br />
+
+        <div>
+          Make public: 
+          <label className='switch'>
+            <input type='checkbox' name='public' checked={this.state.public} onChange={this.handleCheckboxChange} />
+            <span className='slider'></span>
+          </label>
+        </div>
+
+        <br />
+
         <button
           disabled={!this.validate()}
           onClick={this.createDeck}
@@ -215,7 +235,7 @@ class CardEditor extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return { isLoggedIn: state.firebase.auth.uid };
+  return { uid: state.firebase.auth.uid };
 }
 
 export default compose(
