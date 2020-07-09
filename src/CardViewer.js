@@ -2,7 +2,7 @@ import React from 'react';
 import './CardViewer.css';
 
 import { Link, withRouter } from 'react-router-dom';
-import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
+import { firebaseConnect, isLoaded, isEmpty, populate } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
@@ -132,37 +132,40 @@ class CardViewer extends React.Component {
 
     return (
       <div>
-        <h2>{this.props.name}</h2>
-        <p>{this.props.description}</p>
+        <div className='viewer'>
+          <h2>{this.props.name}</h2>
+          <h3>({this.props.ownerName})</h3>
+          <p>{this.props.description}</p>
 
-        {ncards > 0 &&
-          <div className='viewer'>
-            <div className='card' onClick={this.flipCard}>
-              <span className='material-icons star' tabIndex={-1} onClick={this.star}>
-                {card.starred ? 'star' : 'star_outline'}
-              </span>
-              <div className='card-content'>
-                {this.state.showFront ? card.front : card.back}
+          {ncards > 0 &&
+            <div>
+              <div className='card' onClick={this.flipCard}>
+                <span className='material-icons star' tabIndex={-1} onClick={this.star}>
+                  {card.starred ? 'star' : 'star_outline'}
+                </span>
+                <div className='card-content'>
+                  {this.state.showFront ? card.front : card.back}
+                </div>
               </div>
-            </div>
-            <button disabled={idx === 0} tabIndex={-1} className='material-icons seeker' onClick={() => this.seek(-1)}>
-              arrow_back
+              <button disabled={idx === 0} tabIndex={-1} className='material-icons seeker' onClick={() => this.seek(-1)}>
+                arrow_back
             </button>
             Progress: {idx + 1}/{ncards}
-            <button disabled={idx + 1 === ncards} tabIndex={-1} className='material-icons seeker' onClick={() => this.seek(1)}>
-              arrow_forward
+              <button disabled={idx + 1 === ncards} tabIndex={-1} className='material-icons seeker' onClick={() => this.seek(1)}>
+                arrow_forward
             </button>
-            <br />
-            <button tabIndex={-1} onClick={this.toggleShuffle}>
-              {this.state.shuffle ? 'Unshuffle!' : 'Shuffle!'}
-            </button>
-            <br />
-            <br />
-            <button disabled={this.state.starredIdxs.length === 0} tabIndex={-1} onClick={this.toggleShowStarred}>
-              {this.state.showStarred ? 'Display all' : 'Only display starred'}
-            </button>
-          </div>
-        }
+              <br />
+              <button tabIndex={-1} onClick={this.toggleShuffle}>
+                {this.state.shuffle ? 'Unshuffle!' : 'Shuffle!'}
+              </button>
+              <br />
+              <br />
+              <button disabled={this.state.starredIdxs.length === 0} tabIndex={-1} onClick={this.toggleShowStarred}>
+                {this.state.showStarred ? 'Display all' : 'Only display starred'}
+              </button>
+            </div>
+          }
+        </div>
 
         <hr />
         <Link className='link-btn' to='/'>Home</Link>
@@ -171,19 +174,25 @@ class CardViewer extends React.Component {
   }
 }
 
+const populates = [
+  { child: 'owner', root: 'users' }
+];
+
 const mapStateToProps = (state, props) => {
-  const deck = state.firebase.data[props.match.params.deckId];
+  const deck = populate(state.firebase, props.match.params.deckId, populates);
+  console.log(deck);
   const name = deck && deck.name;
   const cards = deck && deck.cards;
   const description = deck && deck.description;
-  return { name, description, cards };
+  const ownerName = deck && deck.owner.username;
+  return { name, description, cards, ownerName };
 }
 
 export default compose(
   withRouter,
   firebaseConnect(props => {
     const deckId = props.match.params.deckId;
-    return [{ path: `/flashcards/${deckId}`, storeAs: deckId }];
+    return [{ path: `/flashcards/${deckId}`, populates, storeAs: deckId }];
   }),
   connect(mapStateToProps),
 )(CardViewer);
