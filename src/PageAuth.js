@@ -10,6 +10,7 @@ class PageAuth extends React.Component {
     this.state = {
       success: null,
       error: null,
+      mode: null,
     }
   }
 
@@ -18,16 +19,17 @@ class PageAuth extends React.Component {
     const mode = query.get('mode');
     const oobCode = query.get('oobCode');
 
-    if (mode !== 'verifyEmail') {
-      return <div>Error. Invalid mode.</div>;
-    }
+    this.setState({ mode });
 
-    this.handleVerifyEmail(oobCode);
+    if (mode === 'verifyEmail') {
+      this.handleVerifyEmail(oobCode);
+    }
   }
 
   handleVerifyEmail = async oobCode => {
     try {
       await this.props.firebase.auth().applyActionCode(oobCode);
+      await this.props.firebase.reloadAuth();
       this.setState({ success: true });
     } catch (error) {
       this.setState({ success: false, error: error.message });
@@ -35,6 +37,10 @@ class PageAuth extends React.Component {
   }
 
   render() {
+    if (this.state.mode !== 'verifyEmail') {
+      return <div>Error. Invalid mode.</div>;
+    }
+
     switch (this.state.success) {
       case null:
         return <div>Verifying email...</div>;
