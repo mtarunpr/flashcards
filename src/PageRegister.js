@@ -29,10 +29,12 @@ class PageRegister extends React.Component {
     const profile = {
       email: this.state.email,
       username: this.state.username,
+      confirmed: false,
     }
 
     try {
       await this.props.firebase.createUser(credentials, profile);
+      await this.props.firebase.auth().currentUser.sendEmailVerification();
     } catch (error) {
       this.setState({ error: error.message });
     }
@@ -40,7 +42,16 @@ class PageRegister extends React.Component {
 
   render() {
     if (this.props.isLoggedIn) {
-      return <Redirect to='/' />;
+      if (this.props.confirmed) {
+        return <Redirect to='/' />;
+      } else {
+        return (
+          <div>
+            <p>A verification email has been sent to your registered address. Please click on the link in the email to continue.</p>
+            <p>Note: you cannot create decks until your email address has been verified.</p>
+          </div>
+        );
+      }
     }
 
     return (
@@ -78,24 +89,29 @@ class PageRegister extends React.Component {
         >
           Register
         </button>
-        {this.state.error &&
+        {
+          this.state.error &&
           <div>
             <br />
             {this.state.error}
           </div>
         }
+        <div>
+          <br />
+          Already have an account? Click <Link to='/login' className='link'>here</Link> to login.
+        </div>
         <hr />
         <Link to='/' className='link-btn'>Home</Link>
-        <br />
-        <br />
-        <Link to='/login' className='link-btn'>Login</Link>
       </div>
     );
   }
 }
 
 const mapStateToProps = state => {
-  return { isLoggedIn: state.firebase.auth.uid };
+  return {
+    isLoggedIn: state.firebase.auth.uid,
+    confirmed: state.firebase.profile.confirmed,
+  };
 }
 
 export default compose(

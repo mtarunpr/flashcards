@@ -30,3 +30,8 @@ a {
 button {
   outline: none;
 }
+
+.link {
+  text-decoration: underline;
+  color: blue;
+}

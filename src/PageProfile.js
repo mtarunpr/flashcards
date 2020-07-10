@@ -34,7 +34,10 @@ class PageProfile extends React.Component {
           <tbody>
             <tr>
               <td>Email:</td>
-              <td><input disabled value={this.props.email} /></td>
+              <td>
+                <input disabled value={this.props.email} />
+                {this.props.confirmed ? '' : '(unconfirmed)'}
+              </td>
             </tr>
             <tr>
               <td>Username:</td>
@@ -54,6 +57,7 @@ const mapStateToProps = state => {
     uid: state.firebase.auth.uid,
     username: state.firebase.profile.username,
     email: state.firebase.profile.email,
+    confirmed: state.firebase.profile.confirmed,
   };
 }
 

@@ -142,7 +142,7 @@ class CardEditor extends React.Component {
   };
 
   render() {
-    if (!this.props.uid) {
+    if (!this.props.uid || !this.props.confirmed) {
       return <Redirect to='/register' />;
     }
 
@@ -232,7 +232,10 @@ class CardEditor extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return { uid: state.firebase.auth.uid };
+  return {
+    uid: state.firebase.auth.uid,
+    confirmed: state.firebase.profile.confirmed,
+  };
 }
 
 export default compose(

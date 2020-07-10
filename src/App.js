@@ -11,6 +11,7 @@ import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { isLoaded } from 'react-redux-firebase';
 import PageProfile from './PageProfile';
+import PageAuth from './PageAuth';
 
 const App = props => {
   if (!isLoaded(props.auth, props.profile)) {
@@ -40,6 +41,9 @@ const App = props => {
           </Route>
           <Route exact path='/profile'>
             <PageProfile />
+          </Route>
+          <Route exact path='/auth'>
+            <PageAuth />
           </Route>
           <Route>
             <div>Error 404: Page not found.</div>

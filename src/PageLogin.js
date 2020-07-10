@@ -59,17 +59,19 @@ class PageLogin extends React.Component {
         </div>
         <br />
         <button onClick={this.login}>Login</button>
-        {this.state.error &&
+        {
+          this.state.error &&
           <div>
             <br />
             {this.state.error}
           </div>
         }
+        <div>
+          <br />
+          Don't have an account yet? Click <Link to='/register' className='link'>here</Link> to register.
+        </div>
         <hr />
         <Link to='/' className='link-btn'>Home</Link>
-        <br />
-        <br />
-        <Link to='/register' className='link-btn'>Register</Link>
       </div>
     );
   }
