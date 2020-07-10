@@ -24,7 +24,7 @@ class PageProfile extends React.Component {
 
   render() {
     if (!this.props.uid) {
-      return <Redirect to='/register' />;
+      return <Redirect to='/login' />;
     }
 
     return (
@@ -36,7 +36,7 @@ class PageProfile extends React.Component {
               <td>Email:</td>
               <td>
                 <input disabled value={this.props.email} />
-                {this.props.confirmed ? '' : '(unconfirmed)'}
+                {this.props.verified ? '' : '(unverified)'}
               </td>
             </tr>
             <tr>
@@ -57,7 +57,7 @@ const mapStateToProps = state => {
     uid: state.firebase.auth.uid,
     username: state.firebase.profile.username,
     email: state.firebase.profile.email,
-    confirmed: state.firebase.profile.confirmed,
+    verified: state.firebase.auth.emailVerified,
   };
 }
 

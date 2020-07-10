@@ -20,6 +20,10 @@ class PageRegister extends React.Component {
     this.setState({ [event.target.name]: event.target.value, error: '' });
   }
 
+  sendEmailVerification = async () => {
+    await this.props.firebase.auth().currentUser.sendEmailVerification();
+  }
+
   register = async () => {
     const credentials = {
       email: this.state.email,
@@ -29,12 +33,11 @@ class PageRegister extends React.Component {
     const profile = {
       email: this.state.email,
       username: this.state.username,
-      confirmed: false,
     }
 
     try {
       await this.props.firebase.createUser(credentials, profile);
-      await this.props.firebase.auth().currentUser.sendEmailVerification();
+      await this.sendEmailVerification();
     } catch (error) {
       this.setState({ error: error.message });
     }
@@ -42,13 +45,14 @@ class PageRegister extends React.Component {
 
   render() {
     if (this.props.isLoggedIn) {
-      if (this.props.confirmed) {
+      if (this.props.verified) {
         return <Redirect to='/' />;
       } else {
         return (
           <div>
             <p>A verification email has been sent to your registered address. Please click on the link in the email to continue.</p>
             <p>Note: you cannot create decks until your email address has been verified.</p>
+            <p>Click <span className='link' onClick={this.sendEmailVerification}>here</span> to resend the email.</p>
           </div>
         );
       }
@@ -110,7 +114,7 @@ class PageRegister extends React.Component {
 const mapStateToProps = state => {
   return {
     isLoggedIn: state.firebase.auth.uid,
-    confirmed: state.firebase.profile.confirmed,
+    verified: state.firebase.auth.emailVerified,
   };
 }
 

@@ -28,7 +28,6 @@ class PageAuth extends React.Component {
   handleVerifyEmail = async oobCode => {
     try {
       await this.props.firebase.auth().applyActionCode(oobCode);
-      this.props.firebase.updateProfile({ confirmed: true });
       this.setState({ success: true });
     } catch (error) {
       this.setState({ success: false, error: error.message });
@@ -47,7 +46,12 @@ class PageAuth extends React.Component {
           </div>
         );
       case false:
-        return <div>Error. {this.state.error}</div>;
+        return (
+          <div>
+            <p>Error. {this.state.error}</p>
+            <p>Please try again.</p>
+          </div>
+        );
       default:
         return <div>Unknown error. Please try again.</div>;
     }

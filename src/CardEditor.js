@@ -142,9 +142,13 @@ class CardEditor extends React.Component {
   };
 
   render() {
-    if (!this.props.uid || !this.props.confirmed) {
-      return <Redirect to='/register' />;
+    if (!this.props.uid) {
+      return <Redirect to='/login' />;
     }
+
+    if (!this.props.verified) {
+      return <Redirect to='/register' />;
+    }    
 
     const cards = this.state.cards.map((card, index) => {
       const cardli = (
@@ -234,7 +238,7 @@ class CardEditor extends React.Component {
 const mapStateToProps = state => {
   return {
     uid: state.firebase.auth.uid,
-    confirmed: state.firebase.profile.confirmed,
+    verified: state.firebase.auth.emailVerified,
   };
 }
 
