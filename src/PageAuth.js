@@ -3,6 +3,7 @@ import React from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { compose } from 'redux';
 import { firebaseConnect } from 'react-redux-firebase';
+import { connect } from 'react-redux';
 
 class PageAuth extends React.Component {
   constructor(props) {
@@ -29,7 +30,9 @@ class PageAuth extends React.Component {
   handleVerifyEmail = async oobCode => {
     try {
       await this.props.firebase.auth().applyActionCode(oobCode);
-      await this.props.firebase.reloadAuth();
+      if (this.props.isLoggedIn) {
+        await this.props.firebase.reloadAuth();
+      }
       this.setState({ success: true });
     } catch (error) {
       this.setState({ success: false, error: error.message });
@@ -64,4 +67,10 @@ class PageAuth extends React.Component {
   }
 }
 
-export default compose(withRouter, firebaseConnect())(PageAuth);
+const mapStateToProps = state => {
+  return {
+    isLoggedIn: state.firebase.auth.uid,
+  };
+}
+
+export default compose(withRouter, firebaseConnect(), connect(mapStateToProps))(PageAuth);
