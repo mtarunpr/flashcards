@@ -7,33 +7,46 @@ import { firebaseConnect, isLoaded } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 
 class Homepage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      decks: {},
+    };
+  }
+
+  async componentDidMount() {
+    const getHomepage = this.props.firebase.functions().httpsCallable('getHomepage');
+    const decks = await getHomepage();
+    this.setState({ decks: decks.data });
+  }
+
   getDeckHtml = deckId => {
     return (
       <Link key={deckId} className='flex-item' to={'/viewer/' + deckId}>
         <div className='name'>
-          {this.props.decks[deckId]['name']}
+          {this.state.decks[deckId]['name']}
         </div>
         <br />
         <div className='description'>
-          {this.props.decks[deckId]['description']}
+          {this.state.decks[deckId]['description']}
         </div>
       </Link>
     );
   }
 
   render() {
-    if (!isLoaded(this.props.decks)) {
+    if (!isLoaded(this.state.decks)) {
       return <div>Loading...</div>;
     }
 
-    const myDecks = Object.keys(this.props.decks).filter(
-      deckId => this.props.decks[deckId].owner === this.props.uid
+    const myDecks = Object.keys(this.state.decks).filter(
+      deckId => this.state.decks[deckId].owner === this.state.uid
     ).map(this.getDeckHtml);
 
-    const publicDecks = Object.keys(this.props.decks).filter(
+    const publicDecks = Object.keys(this.state.decks).filter(
       deckId => (
-        this.props.decks[deckId].owner !== this.props.uid
-        && this.props.decks[deckId].public
+        this.state.decks[deckId].owner !== this.props.uid
+        && this.state.decks[deckId].public
       )
     ).map(this.getDeckHtml);
 
@@ -56,9 +69,7 @@ class Homepage extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const decks = state.firebase.data.homepage;
-  const uid = state.firebase.auth.uid;
-  return { decks, uid };
+  return { uid: state.firebase.auth.uid };
 }
 
-export default compose(firebaseConnect(['/homepage']), connect(mapStateToProps))(Homepage);
+export default compose(firebaseConnect(), connect(mapStateToProps))(Homepage);
