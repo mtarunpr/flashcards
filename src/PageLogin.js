@@ -17,7 +17,7 @@ class PageLogin extends React.Component {
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value, error: '' });
-  }
+  };
 
   login = async () => {
     const credentials = {
@@ -30,11 +30,11 @@ class PageLogin extends React.Component {
     } catch (error) {
       this.setState({ error: error.message });
     }
-  }
+  };
 
   render() {
     if (this.props.isLoggedIn) {
-      return <Redirect to='/' />;
+      return <Redirect to="/" />;
     }
 
     return (
@@ -42,36 +42,41 @@ class PageLogin extends React.Component {
         <h2>Login</h2>
         <div>
           <input
-            name='email'
+            name="email"
             onChange={this.handleChange}
-            placeholder='Email'
+            placeholder="Email"
             value={this.state.email}
           />
           <br />
           <br />
           <input
-            name='password'
-            type='password'
+            name="password"
+            type="password"
             onChange={this.handleChange}
-            placeholder='Password'
+            placeholder="Password"
             value={this.state.password}
           />
         </div>
         <br />
         <button onClick={this.login}>Login</button>
-        {
-          this.state.error &&
+        {this.state.error && (
           <div>
             <br />
             {this.state.error}
           </div>
-        }
+        )}
         <div>
           <br />
-          Don't have an account yet? Click <Link to='/register' className='link'>here</Link> to register.
+          Don't have an account yet? Click{' '}
+          <Link to="/register" className="link">
+            here
+          </Link>{' '}
+          to register.
         </div>
         <hr />
-        <Link to='/' className='link-btn'>Home</Link>
+        <Link to="/" className="link-btn">
+          Home
+        </Link>
       </div>
     );
   }
@@ -79,9 +84,6 @@ class PageLogin extends React.Component {
 
 const mapStateToProps = state => {
   return { isLoggedIn: state.firebase.auth.uid };
-}
+};
 
-export default compose(
-  firebaseConnect(),
-  connect(mapStateToProps),
-)(PageLogin);
+export default compose(firebaseConnect(), connect(mapStateToProps))(PageLogin);

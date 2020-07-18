@@ -3,7 +3,7 @@ import CardEditor from './CardEditor';
 import CardViewer from './CardViewer';
 import './App.css';
 import Homepage from './Homepage';
-import PageRegister from "./PageRegister";
+import PageRegister from './PageRegister';
 import PageLogin from './PageLogin';
 import Menu from './Menu';
 
@@ -24,25 +24,25 @@ const App = props => {
 
       <div style={{ clear: 'both' }}>
         <Switch>
-          <Route exact path='/'>
+          <Route exact path="/">
             <Homepage />
           </Route>
-          <Route exact path='/editor'>
+          <Route exact path="/editor">
             <CardEditor />
           </Route>
-          <Route exact path='/viewer/:deckId'>
+          <Route exact path="/viewer/:deckId">
             <CardViewer />
           </Route>
-          <Route exact path='/register'>
+          <Route exact path="/register">
             <PageRegister />
           </Route>
-          <Route exact path='/login'>
+          <Route exact path="/login">
             <PageLogin />
           </Route>
-          <Route exact path='/profile'>
+          <Route exact path="/profile">
             <PageProfile />
           </Route>
-          <Route exact path='/auth'>
+          <Route exact path="/auth">
             <PageAuth />
           </Route>
           <Route>
@@ -52,13 +52,13 @@ const App = props => {
       </div>
     </React.Fragment>
   );
-}
+};
 
 const mapStateToProps = state => {
   return {
     auth: state.firebase.auth,
     profile: state.firebase.profile,
   };
-}
+};
 
 export default connect(mapStateToProps)(App);

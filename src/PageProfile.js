@@ -16,15 +16,15 @@ class PageProfile extends React.Component {
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
-  }
+  };
 
   save = () => {
     this.props.firebase.updateProfile({ username: this.state.username });
-  }
+  };
 
   render() {
     if (!this.props.uid) {
-      return <Redirect to='/login' />;
+      return <Redirect to="/login" />;
     }
 
     return (
@@ -41,12 +41,23 @@ class PageProfile extends React.Component {
             </tr>
             <tr>
               <td>Username:</td>
-              <td><input name='username' onChange={this.handleChange} value={this.state.username} /></td>
+              <td>
+                <input
+                  name="username"
+                  onChange={this.handleChange}
+                  value={this.state.username}
+                />
+              </td>
             </tr>
           </tbody>
         </table>
         <br />
-        <button disabled={this.state.username === this.props.username} onClick={this.save}>Save</button>
+        <button
+          disabled={this.state.username === this.props.username}
+          onClick={this.save}
+        >
+          Save
+        </button>
       </div>
     );
   }
@@ -59,6 +70,9 @@ const mapStateToProps = state => {
     email: state.firebase.profile.email,
     verified: state.firebase.auth.emailVerified,
   };
-}
+};
 
-export default compose(firebaseConnect(), connect(mapStateToProps))(PageProfile);
+export default compose(
+  firebaseConnect(),
+  connect(mapStateToProps),
+)(PageProfile);

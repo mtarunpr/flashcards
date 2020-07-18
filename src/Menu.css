@@ -19,7 +19,8 @@
   right: 0;
 }
 
-.dropdown-content a, .dropdown-content .span-link {
+.dropdown-content a,
+.dropdown-content .span-link {
   background-color: white;
   color: black;
   padding: 10px 14px;
@@ -27,7 +28,8 @@
   display: block;
 }
 
-.dropdown a:hover, .dropdown .span-link:hover {
+.dropdown a:hover,
+.dropdown .span-link:hover {
   background-color: #ddd;
 }
 

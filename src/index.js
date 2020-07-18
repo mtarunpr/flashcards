@@ -12,18 +12,18 @@ import 'firebase/functions';
 import { createStore, combineReducers } from 'redux';
 import {
   ReactReduxFirebaseProvider,
-  firebaseReducer
+  firebaseReducer,
 } from 'react-redux-firebase';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBbfEKrqqpXtIYLlkDbpC6RVDuvdoFw0hM",
-  authDomain: "bootcamp-tarun.firebaseapp.com", 
-  databaseURL: "https://bootcamp-tarun.firebaseio.com",
-  projectId: "bootcamp-tarun",
-  storageBucket: "bootcamp-tarun.appspot.com",
-  messagingSenderId: "797485418099",
-  appId: "1:797485418099:web:570243ebd3d23dba784c06"
+  apiKey: 'AIzaSyBbfEKrqqpXtIYLlkDbpC6RVDuvdoFw0hM',
+  authDomain: 'bootcamp-tarun.firebaseapp.com',
+  databaseURL: 'https://bootcamp-tarun.firebaseio.com',
+  projectId: 'bootcamp-tarun',
+  storageBucket: 'bootcamp-tarun.appspot.com',
+  messagingSenderId: '797485418099',
+  appId: '1:797485418099:web:570243ebd3d23dba784c06',
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -31,7 +31,7 @@ firebase.initializeApp(firebaseConfig);
 
 // Add firebase to reducers
 const rootReducer = combineReducers({
-  firebase: firebaseReducer
+  firebase: firebaseReducer,
   // firestore: firestoreReducer // <- needed if using firestore
 });
 
@@ -44,14 +44,14 @@ const rrfConfig = {
   preserveOnLogout: ['homepage'],
   // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
   // enableClaims: true // Get custom claims along with the profile
-}
+};
 
 const rrfProps = {
   firebase,
   config: rrfConfig,
-  dispatch: store.dispatch
+  dispatch: store.dispatch,
   // createFirestoreInstance // <- needed if using firestore
-}
+};
 
 ReactDOM.render(
   <Provider store={store}>

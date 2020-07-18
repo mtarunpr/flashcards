@@ -12,7 +12,7 @@ class PageAuth extends React.Component {
       success: null,
       error: null,
       mode: null,
-    }
+    };
   }
 
   componentDidMount = () => {
@@ -25,7 +25,7 @@ class PageAuth extends React.Component {
     if (mode === 'verifyEmail') {
       this.handleVerifyEmail(oobCode);
     }
-  }
+  };
 
   handleVerifyEmail = async oobCode => {
     try {
@@ -37,7 +37,7 @@ class PageAuth extends React.Component {
     } catch (error) {
       this.setState({ success: false, error: error.message });
     }
-  }
+  };
 
   render() {
     if (this.state.mode !== 'verifyEmail') {
@@ -51,7 +51,11 @@ class PageAuth extends React.Component {
         return (
           <div>
             <p>Email address verified!</p>
-            <p><Link className='link' to='/'>Click here to continue.</Link></p>
+            <p>
+              <Link className="link" to="/">
+                Click here to continue.
+              </Link>
+            </p>
           </div>
         );
       case false:
@@ -71,6 +75,10 @@ const mapStateToProps = state => {
   return {
     isLoggedIn: state.firebase.auth.uid,
   };
-}
+};
 
-export default compose(withRouter, firebaseConnect(), connect(mapStateToProps))(PageAuth);
+export default compose(
+  withRouter,
+  firebaseConnect(),
+  connect(mapStateToProps),
+)(PageAuth);
