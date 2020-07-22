@@ -10,7 +10,7 @@ class Homepage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      decks: {},
+      decks: null,
     };
   }
 
@@ -35,12 +35,12 @@ class Homepage extends React.Component {
   };
 
   render() {
-    if (!isLoaded(this.state.decks)) {
+    if (!isLoaded(this.state.decks) || !this.state.decks) {
       return <div>Loading...</div>;
     }
 
     const myDecks = Object.keys(this.state.decks)
-      .filter(deckId => this.state.decks[deckId].owner === this.state.uid)
+      .filter(deckId => this.state.decks[deckId].owner === this.props.uid)
       .map(this.getDeckHtml);
 
     const publicDecks = Object.keys(this.state.decks)

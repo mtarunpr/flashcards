@@ -124,8 +124,7 @@ class CardEditor extends React.Component {
     this.setState({ cards });
   };
 
-  createDeck = () => {
-    const deckId = this.props.firebase.push('/flashcards').key;
+  createDeck = async () => {
     const deck = {
       cards: this.state.cards,
       name: this.state.name,
@@ -134,16 +133,12 @@ class CardEditor extends React.Component {
       owner: this.props.uid,
     };
 
-    const updates = {};
-    updates[`/flashcards/${deckId}`] = deck;
-    updates[`/homepage/${deckId}/name`] = this.state.name;
-    updates[`/homepage/${deckId}/description`] = this.state.description;
-    updates[`/homepage/${deckId}/public`] = this.state.public;
-    updates[`/homepage/${deckId}/owner`] = this.props.uid;
+    const createDeck = this.props.firebase
+      .functions()
+      .httpsCallable('createDeck');
 
-    const onComplete = () => this.props.history.push(`/viewer/${deckId}`);
-
-    this.props.firebase.update('/', updates, onComplete);
+    const deckId = await createDeck(deck);
+    deckId.data && this.props.history.push(`/viewer/${deckId.data}`);
   };
 
   onSortEnd = ({ oldIndex, newIndex }) => {

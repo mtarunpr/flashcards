@@ -211,7 +211,6 @@ const populates = [{ child: 'owner', root: 'users' }];
 
 const mapStateToProps = (state, props) => {
   const deck = populate(state.firebase, props.match.params.deckId, populates);
-  console.log(deck);
   const name = deck && deck.name;
   const cards = deck && deck.cards;
   const description = deck && deck.description;

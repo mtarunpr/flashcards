@@ -26,3 +26,23 @@ exports.getHomepage = functions.https.onCall(async (data, context) => {
   });
   return sanitized;
 });
+
+exports.createDeck = functions.https.onCall(async (deck, context) => {
+  if (!Array.isArray(deck.cards)) {
+    return null;
+  }
+
+  const newDeckRef = admin.database().ref('/flashcards').push();
+  const deckId = newDeckRef.key;
+
+  const updates = {};
+  updates[`/flashcards/${deckId}`] = deck;
+  updates[`/homepage/${deckId}/name`] = deck.name;
+  updates[`/homepage/${deckId}/description`] = deck.description;
+  updates[`/homepage/${deckId}/public`] = deck.public;
+  updates[`/homepage/${deckId}/owner`] = context.auth.uid;
+
+  await admin.database().ref('/').update(updates);
+
+  return deckId;
+});
