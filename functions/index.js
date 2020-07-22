@@ -46,3 +46,11 @@ exports.createDeck = functions.https.onCall(async (deck, context) => {
 
   return deckId;
 });
+
+exports.getUsername = functions.https.onCall(async (uid, context) => {
+  const usernameSnapshot = await admin
+    .database()
+    .ref(`/users/${uid}/username`)
+    .once('value');
+  return usernameSnapshot.val();
+});

@@ -2,12 +2,7 @@ import React from 'react';
 import './CardViewer.css';
 
 import { Link, withRouter } from 'react-router-dom';
-import {
-  firebaseConnect,
-  isLoaded,
-  isEmpty,
-  populate,
-} from 'react-redux-firebase';
+import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
@@ -22,6 +17,7 @@ class CardViewer extends React.Component {
       cards: [],
       order: [], // mapping from display index to firebase index
       starredIdxs: [], // array of firebase indices of starred cards
+      ownerName: null,
     };
   }
 
@@ -29,7 +25,7 @@ class CardViewer extends React.Component {
     document.addEventListener('keydown', this.onKeyDown, false);
   };
 
-  componentDidUpdate = prevProps => {
+  componentDidUpdate = async prevProps => {
     if (this.props.cards && this.props.cards !== prevProps.cards) {
       const idx = Math.min(this.state.idx, this.props.cards.length - 1);
       const order =
@@ -43,6 +39,14 @@ class CardViewer extends React.Component {
         order,
         starredIdxs,
       });
+    }
+
+    if (this.props.ownerId !== prevProps.ownerId) {
+      const getUsername = this.props.firebase
+        .functions()
+        .httpsCallable('getUsername');
+      const ownerName = await getUsername(this.props.ownerId);
+      this.setState({ ownerName: ownerName.data });
     }
   };
 
@@ -128,7 +132,7 @@ class CardViewer extends React.Component {
   };
 
   render() {
-    if (!isLoaded(this.props.cards)) {
+    if (!isLoaded(this.props.cards) || !this.state.ownerName) {
       return <div>Loading...</div>;
     }
 
@@ -145,7 +149,7 @@ class CardViewer extends React.Component {
       <div>
         <div className="viewer">
           <h2>{this.props.name}</h2>
-          <h3>({this.props.ownerName})</h3>
+          <h3>({this.state.ownerName})</h3>
           <p>{this.props.description}</p>
 
           {ncards > 0 && (
@@ -207,22 +211,20 @@ class CardViewer extends React.Component {
   }
 }
 
-const populates = [{ child: 'owner', root: 'users' }];
-
 const mapStateToProps = (state, props) => {
-  const deck = populate(state.firebase, props.match.params.deckId, populates);
+  const deck = state.firebase.data[props.match.params.deckId];
   const name = deck && deck.name;
   const cards = deck && deck.cards;
   const description = deck && deck.description;
-  const ownerName = deck && deck.owner.username;
-  return { name, description, cards, ownerName };
+  const ownerId = deck && deck.owner;
+  return { name, description, cards, ownerId };
 };
 
 export default compose(
   withRouter,
   firebaseConnect(props => {
     const deckId = props.match.params.deckId;
-    return [{ path: `/flashcards/${deckId}`, populates, storeAs: deckId }];
+    return [{ path: `/flashcards/${deckId}`, storeAs: deckId }];
   }),
   connect(mapStateToProps),
 )(CardViewer);
