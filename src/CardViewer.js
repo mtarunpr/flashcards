@@ -41,7 +41,7 @@ class CardViewer extends React.Component {
       });
     }
 
-    if (this.props.ownerId !== prevProps.ownerId) {
+    if (!this.state.ownerName || this.props.ownerId !== prevProps.ownerId) {
       const getUsername = this.props.firebase
         .functions()
         .httpsCallable('getUsername');
